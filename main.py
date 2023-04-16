@@ -1,5 +1,7 @@
 # nộp source code, file csv có thể import, ảnh chụp màn hình có thể import, optional: thêm 1 chương trình .exe, tách attribute bằng @
-
+# git remote add origin https://github.com/QuachNgoc/TikiClawer.git
+# git branch -M main
+# git push -u origin main
 from TikiClawer import TikiClawer
 from data import *
 import os
