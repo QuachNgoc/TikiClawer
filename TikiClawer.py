@@ -261,20 +261,4 @@ class TikiClawer:
             df.to_csv(path, sep="@", index=False)
 
         except Exception as e:
-            pass
-
-
-
-
-            
-
-
-
-
-
-
-
-
-
-
-        
+            pass       

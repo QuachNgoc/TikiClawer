@@ -2,3 +2,5 @@ env/
 chromedriver/
 __pycache__/
 .gitignore
+build/
+main.spec

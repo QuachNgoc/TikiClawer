@@ -1,16 +1,10 @@
-# nộp source code, file csv có thể import, ảnh chụp màn hình có thể import, optional: thêm 1 chương trình .exe, tách attribute bằng @
-# git remote add origin https://github.com/QuachNgoc/TikiClawer.git
-# git branch -M main
-# git push -u origin main
+
 from TikiClawer import TikiClawer
 from data import *
 import time
-import csv
+
 
 import tkinter as tk
-from tkinter.filedialog import askopenfilename
-
-BACKGROUND_COLOR = "#B1DDC6"
 url_q = "https://tiki.vn/search?q="
 file_path = "import_data.csv"
 product_txt_path = "data.txt"
