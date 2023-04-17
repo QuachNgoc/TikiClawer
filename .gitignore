@@ -1,3 +1,4 @@
 env/
 chromedriver/
 __pycache__/
+.gitignore

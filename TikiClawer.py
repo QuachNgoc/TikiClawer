@@ -202,8 +202,8 @@ class TikiClawer:
 
     def appendtoTotalProduct(self, list):
         list.append({
-            "ID": self.generate_item_id()[0:8],
-            "Type": self.type_txt,
+            "ID": self.generate_item_id(),
+            "Type": "simple",
             "SKU": "",
             "Name": self.name,
             "Published": 1,
