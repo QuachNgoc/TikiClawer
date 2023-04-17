@@ -14,7 +14,7 @@
 ## ⚙️ Chức năng
 - Người dùng nhập các từ khóa cần search.
 - Xuất file csv.
-- Import csv đó vào Wordpress.
+- có thể import csv đó vào Wordpress.
 
 ## License
 This project is licensed under the ISC License.

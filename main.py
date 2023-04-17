@@ -4,7 +4,9 @@
 # git push -u origin main
 from TikiClawer import TikiClawer
 from data import *
-import os
+import time
+import random
+
 
 # Const
 searchInput = input("Nhập các từ khóa cách nhau bởi dấu phẩy: ") # bàn phím cơ, bàn phím cơ gaming, bàn phím chơi game
@@ -12,86 +14,80 @@ listSearchInput = searchInput.split(", ")
 
 
 url = "https://tiki.vn"
+url_q = "https://tiki.vn/search?q="
 file_path = "import_data.csv"
 new_file_path = "data.csv"
 product_txt_path = "data.txt"
 
-listXpath = [first_product_name_xpath, first_product_xpath, prices_xpath, brand_name_xpath, type_names_xapth, color_names_xpath]
+# lưu thông tin các sản phẩm crawl về
 totalProduct = []
 
-for i in listSearchInput:
-    print(i)
+# cho đi đến trang thứ n
+pages = 6
+
+# lưu tên sản phẩm lại
+productNameList = []
+
+for searchinput in listSearchInput:
     # Gọi Object TikiCrawl ra
-    tiki = TikiClawer(url, i, listXpath, product_txt_path)
+    tiki = TikiClawer()
 
-    # Đi đến url đó
-    tiki.getUrl()
+    for i in range(1,pages):
+        tiki.getUrl(f"{url_q}{searchinput}&page={i}")
+        time.sleep(5)
+        
+    
+        # lấy link sản phẩm và lưu thành array
+        productLinks = tiki.getProductLinks(productLinksXpath)
 
-    # Tìm kiếm sản phẩm bàn phím cơ
-    tiki.sendSearchInput(i)
-    tiki.deleteSearchInput()
+        for link in productLinks:
+            ID = int(100*random.random())
+            # đi vào đường link sản phẩm đó
+            tiki.getUrl(link)
 
-    # Lưu các tên sản phẩm đã lấy name vào 1 file txt
-    productNameList = tiki.getListProduct(xpath_list_product_names)
+            # lấy tên sản phẩm đó
+            tiki.name = tiki.getProductInfo(name_xpath)
+            if tiki.name == "Không tìm thấy sản phẩm":
+                continue
+            else:
+                # tạo post name
+                tiki.createPostName(tiki.name)
+
+                # lấy giá
+                tiki.getPrices(prices_xpath)
+
+                # lấy brand
+                tiki.brand = tiki.getProductInfo(brand_name_xpath)
+
+                # lấy type
+                tiki.getType(tiki.name)
+
+                # lấy catory
+                tiki.getCatories(type_names_xapth)
+
+                # lấy colors
+                tiki.getColors(color_names_xpath)
+
+                # lấy ảnh
+                tiki.getImages()
+
+                # lấy Description
+                tiki.getDescription()
+
+                tiki.appendtoTotalProduct(totalProduct)
+         
 
     # Lưu file.txt ở đường dẫn nào đó
-    tiki.savingData(productNameList, product_txt_path)
+    tiki.savingData(totalProduct, product_txt_path)
 
-    # Lấy dữ liệu từ file.txt đó
-    listProductName = tiki.exportData(product_txt_path)
-
-    for item in listProductName:
-        tiki.sendSearchInput(item)
-        tiki.name = item 
-
-        try:
-            first_item_name = tiki.getProductInfo(listXpath[0])
-        except Exception as e:
-            print(e)
-            
-        tiki.checking_item = tiki.name == first_item_name
-        if tiki.checking_item == True:
-
-            tiki.createPostName(tiki.name)
-            print(tiki.post_name)
-
-            tiki.clickItems(listXpath[1])
-
-            tiki.getPrices(listXpath[2])
-            print(tiki.regular_price)
-            print(tiki.discounted_price)
-
-            tiki.brand = tiki.getProductInfo(listXpath[3])
-            print(tiki.brand)
-
-            # lấy list các type
-            tiki.getType(tiki.name)
-            print(tiki.type_txt)
-            
-
-            # lấy catories
-            tiki.getCatories(listXpath[4])
-            print(tiki.cat_txt)
-
-            tiki.getColors(listXpath[5])
-            print(tiki.color_txt)
-
-            tiki.appendtoTotalProduct(totalProduct)
-        
-        tiki.deleteSearchInput()
-            
+    # lấy data từ data.txt
+    data = tiki.exportData(product_txt_path)
 
     # chuyển thành file csv
-    
-    if os.path.exists(file_path):
-        print("CSV file exists!")
-        tiki.mergeCsv(totalProduct,file_path, new_file_path)
-    else:
-        print("CSV file does not exist.")
-        tiki.createCSV(totalProduct, file_path)
-    
-    # dừng tiến trình
+    tiki.createCSV(data, file_path)
+
     tiki.stopProcess()
+
 
 
 
