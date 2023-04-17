@@ -5,89 +5,111 @@
 from TikiClawer import TikiClawer
 from data import *
 import time
-import random
+import csv
 
+import tkinter as tk
+from tkinter.filedialog import askopenfilename
 
-# Const
-searchInput = input("Nhập các từ khóa cách nhau bởi dấu phẩy: ") # bàn phím cơ, bàn phím cơ gaming, bàn phím chơi game
-listSearchInput = searchInput.split(", ")
-
-
-url = "https://tiki.vn"
+BACKGROUND_COLOR = "#B1DDC6"
 url_q = "https://tiki.vn/search?q="
 file_path = "import_data.csv"
-new_file_path = "data.csv"
 product_txt_path = "data.txt"
 
-# lưu thông tin các sản phẩm crawl về
-totalProduct = []
 
-# cho đi đến trang thứ n
-pages = 6
+# create a Tkinter window
+window = tk.Tk()
+window.title("Tiki Clawer")
 
-# lưu tên sản phẩm lại
-productNameList = []
 
-for searchinput in listSearchInput:
-    # Gọi Object TikiCrawl ra
-    tiki = TikiClawer()
+##----------------UI----------------------------##
+searchInputLabel = tk.Label(window, text="Nhập các từ cần tìm cách nhau bởi dấu phẩy: ")
+searchInputLabel.grid(column=0, row=0)
 
-    for i in range(1,pages):
-        tiki.getUrl(f"{url_q}{searchinput}&page={i}")
-        time.sleep(5)
-        
-    
-        # lấy link sản phẩm và lưu thành array
-        productLinks = tiki.getProductLinks(productLinksXpath)
+searchInputTxt = tk.Entry(window)
+searchInputTxt.grid(column=0, row=1)
 
-        for link in productLinks:
-            ID = int(100*random.random())
-            # đi vào đường link sản phẩm đó
-            tiki.getUrl(link)
+pageInputLabel =tk.Label(window, text="Số trang cần crawl: ")
+pageInputLabel.grid(column=0, row=3)
 
-            # lấy tên sản phẩm đó
-            tiki.name = tiki.getProductInfo(name_xpath)
-            if tiki.name == "Không tìm thấy sản phẩm":
-                continue
-            else:
-                # tạo post name
-                tiki.createPostName(tiki.name)
+scale = tk.Scale(window, from_=0, to=10, orient=tk.HORIZONTAL)
+scale.grid(column=0, row=4)
+##---------------------------------------------##
 
-                # lấy giá
-                tiki.getPrices(prices_xpath)
+def display_output():
+    # Const
+    searchInput = searchInputTxt.get()
+    listSearchInput = searchInput.split(", ")
 
-                # lấy brand
-                tiki.brand = tiki.getProductInfo(brand_name_xpath)
+    # lưu thông tin các sản phẩm crawl về
+    totalProduct = []
 
-                # lấy type
-                tiki.getType(tiki.name)
+    # cho đi đến trang thứ n
+    pages = scale.get()
 
-                # lấy catory
-                tiki.getCatories(type_names_xapth)
 
-                # lấy colors
-                tiki.getColors(color_names_xpath)
+    for searchinput in listSearchInput:
+        # Gọi Object TikiCrawl ra
+        tiki = TikiClawer()
 
-                # lấy ảnh
-                tiki.getImages()
+        for i in range(1,pages):
+            tiki.getUrl(f"{url_q}{searchinput}&page={i}")
+            time.sleep(5)
+            
+            # lấy link sản phẩm và lưu thành array
+            productLinks = tiki.getProductLinks(productLinksXpath)
 
-                # lấy Description
-                tiki.getDescription()
+            for link in productLinks:
+                # đi vào đường link sản phẩm đó
+                tiki.getUrl(link)
 
-                tiki.appendtoTotalProduct(totalProduct)
-         
+                # lấy tên sản phẩm đó
+                tiki.name = tiki.getProductInfo(name_xpath)
+                if tiki.name == "Không tìm thấy sản phẩm":
+                    continue
+                else:
+                    # tạo post name
+                    tiki.createPostName(tiki.name)
 
-    # Lưu file.txt ở đường dẫn nào đó
-    tiki.savingData(totalProduct, product_txt_path)
+                    # lấy giá
+                    tiki.getPrices(prices_xpath)
 
-    # lấy data từ data.txt
-    data = tiki.exportData(product_txt_path)
+                    # lấy brand
+                    tiki.brand = tiki.getProductInfo(brand_name_xpath)
 
-    # chuyển thành file csv
-    tiki.createCSV(data, file_path)
+                    # lấy type
+                    tiki.getType(tiki.name)
 
-    tiki.stopProcess()
+                    # lấy catory
+                    tiki.getCatories(type_names_xapth)
 
+                    # lấy colors
+                    tiki.getColors(color_names_xpath)
+
+                    # lấy ảnh
+                    tiki.getImages()
+
+                    # lấy Description
+                    tiki.getDescription()
+
+                    tiki.appendtoTotalProduct(totalProduct)
+            
+
+        # Lưu file.txt ở đường dẫn nào đó
+        tiki.savingData(totalProduct, product_txt_path)
+
+        # lấy data từ data.txt
+        data = tiki.exportData(product_txt_path)
+
+        # chuyển thành file csv
+        tiki.createCSV(data, file_path)
+
+        tiki.stopProcess()
+
+##-----------------UI-----------------##
+button = tk.Button(window, text="Submit", command=display_output)
+button.grid(column=0, row=5)
+
+window.mainloop()
 
 
 
