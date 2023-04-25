@@ -9,7 +9,14 @@
 
 
 ## 🧐 Authors
-- **Author**: Quách Bảo Ngọc
+**Author**: Quách Bảo Ngọc - 20520655
+
+## 👩‍💻🧑‍💻 Teams:
+Trịnh Văn Hậu
+Nguyễn Thể Phong
+Nguyễn Thị Trà Giang
+Đào Võ Trường Giang 
+Lê Vũ Quốc Việt
 
 ## 🖼️ Giao diện
 
@@ -26,9 +33,14 @@
 ![2](https://user-images.githubusercontent.com/80575560/232669718-aa018399-9503-447d-b25a-114fccae62b0.png)
 
 ## ⚙️ Hướng dẫn sử dụng
+<b>C1: Sử dụng Python để chạy</b>
+- Chạy file requirements.txt <code> pip install -r requirements.txt </code>
+- Chạy file main.py <code> python main.py </code>
+<b>C2: Sử dụng exe </b>
 - Truy cập folder *dist*, chạy ClawerProgram.exe
 - Người dùng nhập cách từ khóa cần claw và số trang cần claw ( mỗi trang tương ứng 50 sản phẩm * số trang = tổng sản phẩm )
-- Xuất hiện 2 file: 
+
+<b>Output: Xuất hiện 2 file </b>
   - data.txt: Lưu các thông tin thành các dictionary để dễ xem thông tin
   - import_csv.csv: File được tạo từ data.txt để import lên Wordpress
   
