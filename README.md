@@ -41,6 +41,8 @@ Lê Vũ Quốc Việt
 <b>C1: Sử dụng Python để chạy</b>
 - Chạy file requirements.txt <code> pip install -r requirements.txt </code>
 - Chạy file main.py <code> python main.py </code>
+
+
 <b>C2: Sử dụng exe </b>
 - Truy cập folder *dist*, chạy ClawerProgram.exe
 - Người dùng nhập cách từ khóa cần claw và số trang cần claw ( mỗi trang tương ứng 50 sản phẩm * số trang = tổng sản phẩm )
