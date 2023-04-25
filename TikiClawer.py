@@ -13,7 +13,7 @@ opt = webdriver.ChromeOptions()
 opt.add_argument("--window-size=800,600")
 
 class TikiClawer:
-    def __init__(self):
+    def __init__(self) -> object:
         # global variables
         self.driver = webdriver.Chrome(options=opt)
         self.sleep_time = 3
