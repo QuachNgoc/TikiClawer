@@ -26,7 +26,7 @@ class TikiClawer:
         self.post_name = ""
         self.discounted_price = ""
         self.regular_price = ""
-        self.brand = ""
+        self.author = ""
         self.image = ""
         self.description = ""
 
@@ -155,34 +155,38 @@ class TikiClawer:
             print(e)
 
 
-
+    # Chia ra Tiểu thuyết và Manga
     def getType(self, item):
         name_product = item
-        # cho type là Bluetooth nếu list rỗng
-        if "bluetooth" in name_product or "không dây" in name_product:
-            self.type_txt = "Bluetooth"
+        if "manga" in name_product in name_product:
+            self.cat_txt = "Manga"
         else:
-            self.type_txt = "Có Dây"
+            self.cat_txt = "Tiểu thuyết"
+
+    
+    def getAuthors(self, xpath):
+        try:
+            
+            author_name = self.driver.find_elements(By.XPATH, xpath)
+            if author_name:
+                self.author = author_name[0].text
+            else:
+                if self.cat_txt == "Manga":
+                    self.author = self.driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div[3]/div[3]/div[1]/div[1]/div/table/tbody/tr[3]/td[2]')
+                else:
+                    self.author = ""
+        except Exception as e:
+            pass
 
 
-    def getCatories(self, xpath):
-        catories = self.getListProduct(xpath)
-        new_catories = list(filter(lambda x: x != "", catories))
-        # không có cat nào hết
-        if not new_catories:
-            self.cat_txt = "Khác"
-        else:
-            self.cat_txt = ' | '.join(new_catories)
-
-
-    def getColors(self, xpath):
+    # def getColors(self, xpath):
         
-        colors = self.getListProduct(xpath)
-        new_colors = list(filter(lambda x: x != "", colors))
-        if not new_colors:
-            self.color_txt = "Màu như hình"
-        else:
-            self.color_txt = ' | '.join(new_colors)
+    #     colors = self.getListProduct(xpath)
+    #     new_colors = list(filter(lambda x: x != "", colors))
+    #     if not new_colors:
+    #         self.color_txt = "Màu như hình"
+    #     else:
+    #         self.color_txt = ' | '.join(new_colors)
     
     def generate_item_id(self):
         # Get the current timestamp in milliseconds
@@ -240,8 +244,8 @@ class TikiClawer:
             "External URL": "",
             "Button text": "",
             "Position": 0,
-            "Attribute 1 name": "Colors",
-            "Attribute 1 value(s)": self.color_txt,
+            "Attribute 1 name": "Authors",
+            "Attribute 1 value(s)": self.author,
             "Attribute 1 visible": 0,
             "Attribute 1 global": 1,
             "Attribute 2 name": "",

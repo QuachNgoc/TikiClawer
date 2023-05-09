@@ -59,7 +59,7 @@ def display_output():
     totalProduct = []
 
     # cho đi đến trang thứ n
-    pages = scale.get()
+    pages = scale.get() + 1
 
 
     for searchinput in listSearchInput:
@@ -79,6 +79,7 @@ def display_output():
 
                 # lấy tên sản phẩm đó
                 tiki.name = tiki.getProductInfo(name_xpath)
+                print(tiki.name)
                 if tiki.name == "Không tìm thấy sản phẩm":
                     continue
                 else:
@@ -89,16 +90,17 @@ def display_output():
                     tiki.getPrices(prices_xpath)
 
                     # lấy brand
-                    tiki.brand = tiki.getProductInfo(brand_name_xpath)
+                    # tiki.brand = tiki.getProductInfo(brand_name_xpath)
 
                     # lấy type
                     tiki.getType(tiki.name)
 
-                    # lấy catory
-                    tiki.getCatories(type_names_xapth)
+                    # lấy author
+                    tiki.getAuthors(author_name_xpath)
+                    print(tiki.author)
 
                     # lấy colors
-                    tiki.getColors(color_names_xpath)
+                    # tiki.getColors(color_names_xpath)
 
                     # lấy ảnh
                     tiki.getImages()
