@@ -7,6 +7,7 @@ import chromedriver_autoinstaller
 import ast
 import re
 import uuid
+from unidecode import unidecode
 
 chromedriver_autoinstaller.install()
 opt = webdriver.ChromeOptions()
@@ -20,15 +21,16 @@ class TikiClawer:
         self.search_input_xpath = '//*[@id="main-header"]/div/div[1]/div[1]/div[2]/div/input'
 
         self.name = ""
-        self.color_txt = ""
         self.type_txt = ""
         self.cat_txt = ""
         self.post_name = ""
         self.discounted_price = ""
         self.regular_price = ""
-        self.author = ""
+        self.brand = ""
         self.image = ""
         self.description = ""
+        self.favor_txt = "Khác"
+        self.weight_txt = ""
 
 
     # Đi đến trang đó
@@ -87,7 +89,6 @@ class TikiClawer:
         with open(path, "a+", encoding="utf-8") as file:
             file.seek(0)
             existing_data = file.read().splitlines()
-
             for element in data:
                 if str(element) not in existing_data:
                     file.write(str(element) + "\n")
@@ -155,38 +156,50 @@ class TikiClawer:
             print(e)
 
 
-    # Chia ra Tiểu thuyết và Manga
-    def getType(self, item):
-        name_product = item
-        if "manga" in name_product in name_product:
-            self.cat_txt = "Manga"
-        else:
-            self.cat_txt = "Tiểu thuyết"
+    # Loại sản phẩm
+    def getCate(self, item):
+        name_product = item.lower()
 
-    
-    def getAuthors(self, xpath):
+        if "ngũ cốc" in name_product:
+            self.cat_txt = "Healthy > Ngũ Cốc"
+        elif "sấy" in name_product:
+            self.cat_txt = "Healthy > Đồ sấy"
+        elif "gạo lứt" in name_product:
+            self.cat_txt = "Healthy > Gạo Lứt"
+        elif "hạt" in name_product:
+            self.cat_txt = "Healthy > Hạt"
+        elif any(keyword in name_product for keyword in ["sweet", "ăn vặt"]):
+            self.cat_txt = "Ăn vặt"
+        elif any(keyword in name_product for keyword in ["eatclean", "ăn kiêng", "giảm cân"]):
+            self.cat_txt = "Healthy > Ăn Kiêng"
+        else:
+            self.cat_txt = "Healthy"
+
+
+
+    # Tên brand
+    def getBrand(self, xpath):
         try:
-            
-            author_name = self.driver.find_elements(By.XPATH, xpath)
-            if author_name:
-                self.author = author_name[0].text
-            else:
-                if self.cat_txt == "Manga":
-                    self.author = self.driver.find_element(By.XPATH, '//*[@id="__next"]/div[1]/main/div[3]/div[3]/div[1]/div[1]/div/table/tbody/tr[3]/td[2]')
-                else:
-                    self.author = ""
+            brand_name = self.driver.find_elements(By.XPATH, xpath)
+            self.brand = brand_name[0].text
         except Exception as e:
             pass
 
+    
+    # Vị
+    def getFavors(self, xpath):
+        items = self.getListProduct(xpath)
+        if len(items) > 0:
+            filtered_items =  [item for item in items if re.match(r'^[a-zA-Z\s]+$', unidecode(item))]
+            self.favor_txt  = "|".join(filtered_items)   
 
-    # def getColors(self, xpath):
-        
-    #     colors = self.getListProduct(xpath)
-    #     new_colors = list(filter(lambda x: x != "", colors))
-    #     if not new_colors:
-    #         self.color_txt = "Màu như hình"
-    #     else:
-    #         self.color_txt = ' | '.join(new_colors)
+    # Weights
+    def getWeights(self, xpath):
+        items = self.getListProduct(xpath)
+        if len(items) > 0:
+            
+            filtered_items = filtered_items = [re.search(r'\d+', item).group() for item in items if re.search(r'\d+', item)]
+            self.weight_txt  = "|".join(filtered_items)
     
     def generate_item_id(self):
         # Get the current timestamp in milliseconds
@@ -205,55 +218,61 @@ class TikiClawer:
 
 
     def appendtoTotalProduct(self, list):
-        list.append({
-            "ID": self.generate_item_id(),
-            "Type": "simple",
-            "SKU": "",
-            "Name": self.name,
-            "Published": 1,
-            "Is featured?": 0,
-            "Visibility in catalog": "visible",
-            "Short description": "",
-            "Description": self.description,
-            "Date sale price start": "",
-            "Date sale price ends": "",
-            "Tax status": "taxable",
-            "Tax class": "Standard",
-            "In stock?": 1,
-            "Stock": 100,
-            "Low stock amount": "",
-            "Backorders allowed?": 0,
-            "Sold individually?": 0,
-            "Weight (kg)": "",
-            "Length (cm)": "",
-            "Width (cm)": "",
-            "Height (cm)": "",
-            "Allow customer reviews?": 1,
-            "Purchase note": "",
-            "Sale price": self.discounted_price,
-            "Regular price": self.regular_price,
-            "Categories": self.cat_txt,
-            "Tags": self.post_name,
-            "Shipping class": "",
-            "Images": self.image,
-            "Download limit": "",
-            "Download expiry days": "",
-            "Parent": "",
-            "Grouped products": "",
-            "Upsells": "Cross-sells",
-            "External URL": "",
-            "Button text": "",
-            "Position": 0,
-            "Attribute 1 name": "Authors",
-            "Attribute 1 value(s)": self.author,
-            "Attribute 1 visible": 0,
-            "Attribute 1 global": 1,
-            "Attribute 2 name": "",
-            "Attribute 2 value(s)": "",
-            "Attribute 2 visible": "",
-            "Attribute 2 global": "",
-            })
-        print("Added!")
+        try:
+            list.append({
+                "ID": self.generate_item_id(),
+                "Type": "simple",
+                "SKU": "",
+                "Name": self.name,
+                "Published": 1,
+                "Is featured?": 0,
+                "Visibility in catalog": "visible",
+                "Short description": "",
+                "Description": self.description,
+                "Date sale price start": "",
+                "Date sale price ends": "",
+                "Tax status": "taxable",
+                "Tax class": "Standard",
+                "In stock?": 1,
+                "Stock": 100,
+                "Low stock amount": "",
+                "Backorders allowed?": 0,
+                "Sold individually?": 0,
+                "Weight (kg)": 0.1,
+                "Length (cm)": "",
+                "Width (cm)": "",
+                "Height (cm)": "",
+                "Allow customer reviews?": 1,
+                "Purchase note": "",
+                "Sale price": self.discounted_price,
+                "Regular price": self.regular_price,
+                "Categories": self.cat_txt,
+                "Tags": self.post_name,
+                "Shipping class": "Standard",
+                "Images": self.image,
+                "Download limit": "",
+                "Download expiry days": "",
+                "Parent": "",
+                "Grouped products": "",
+                "Upsells": "",
+                "Cross-sells": "",
+                "External URL": "",
+                "Button text": "",
+                "Position": 0,
+                "Meta: content_width": "default_width",
+                "Attribute 1 name": "Favor",
+                "Attribute 1 value(s)": self.favor_txt,
+                "Attribute 1 visible": 1,
+                "Attribute 1 global": 1,
+                "Attribute 2 name": "Brand",
+                "Attribute 2 value(s)": self.brand,
+                "Attribute 2 visible": 1,
+                "Attribute 2 global": 1,
+                })
+            
+            print("Added!")
+        except Exception as e:
+            pass
 
 
     def createCSV(self, data, path):

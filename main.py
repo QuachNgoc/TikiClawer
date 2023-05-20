@@ -79,7 +79,7 @@ def display_output():
 
                 # lấy tên sản phẩm đó
                 tiki.name = tiki.getProductInfo(name_xpath)
-                print(tiki.name)
+                print(tiki.name.lower())
                 if tiki.name == "Không tìm thấy sản phẩm":
                     continue
                 else:
@@ -90,18 +90,19 @@ def display_output():
                     tiki.getPrices(prices_xpath)
 
                     # lấy brand
-                    # tiki.brand = tiki.getProductInfo(brand_name_xpath)
+                    tiki.getBrand(brand_name_xpath)
 
                     # lấy type
-                    tiki.getType(tiki.name)
+                    tiki.getCate(tiki.name)
+                    print(tiki.cat_txt)
 
-                    # lấy author
-                    tiki.getAuthors(author_name_xpath)
-                    print(tiki.author)
+                    # lấy Vị
+                    tiki.getFavors(favor_xpath)
+                    print(tiki.favor_txt)
 
-                    # lấy colors
-                    # tiki.getColors(color_names_xpath)
-
+                    tiki.getWeights(favor_xpath)
+                    print(tiki.weight_txt)
+                    
                     # lấy ảnh
                     tiki.getImages()
 
