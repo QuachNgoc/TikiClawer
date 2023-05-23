@@ -81,6 +81,17 @@ class App(customtkinter.CTk):
 
         #----------------Output Textbox -----------------#
         self.textbox = customtkinter.CTkTextbox(self)
+        self.textbox.insert("0.0", """
+        ##Chào mừng đến với ứng dụng của chúng tôi!
+
+        Vào Products để chọn:
+        1) CRUD_1: CRUD 1 sản phẩm
+        2) Create_All: Tạo sản phẩm từ file csv
+        3) List_All: Hiển thị tất cả sản phẩm
+        4) View_1: Xem thông tin của 1 sản phẩm theo ID
+
+        """)
+
         self.textbox.grid(row=0, column=1, rowspan=2, padx=20, pady=(20,0), sticky="nsew")  
 
         #----------------------Product Menu--------------------------#
@@ -106,13 +117,46 @@ class App(customtkinter.CTk):
         self.optionmenu_1 = customtkinter.CTkOptionMenu(self.tabview.tab("Products"), dynamic_resizing=False, values=["CRUD_1", "Create_All", "List_All", "View_1"],variable=self.optionmenu_1_var, command = lambda name = self.optionmenu_1_var, name_api = self.product_api : self.execute_function(name, name_api))
         self.optionmenu_1.grid(row=0, column=1, padx=20, pady=(20, 10))
 
-        ###------ CRUD Product Attribute-----------###
-        self.optionmenu_2_label = customtkinter.CTkLabel(self.tabview.tab("Products"), text="Attribute: ", font=customtkinter.CTkFont(size=20, weight="bold"))
-        self.optionmenu_2_label.grid(row=1,column=0, padx=5, pady=(20, 10))
-        self.optionmenu_2 = customtkinter.CTkOptionMenu(self.tabview.tab("Products"), dynamic_resizing=False, values=["CRUD_Att_1", "List_Att_All", "View_Att_1"],variable=self.optionmenu_1_var, command = lambda name = self.optionmenu_1_var, name_api = self.product_att_api : self.execute_function(name, name_api))
-        self.optionmenu_2.grid(row=1, column=1, padx=20, pady=(20, 10))
+        # create scrollable frame
+        self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Chức Năng")
+        self.scrollable_frame.grid(row=1, column=2, padx=10, pady=20, sticky="nsew")
+        self.scrollable_frame.grid_columnconfigure(0, weight=1)
+        self.scrollable_frame_switches = []
+        self.func_name = ["Xóa khi hết hàng dựa theo ID", "Tự động xóa sản phẩm hết hàng"]
 
-    
+        self.switch_var = customtkinter.StringVar(value="off")
+        self.switch_var_1 = customtkinter.StringVar(value="off")
+
+        self.switch = customtkinter.CTkSwitch(master=self.scrollable_frame, text=self.func_name[0], command=self.delete_out_of_stock, variable=self.switch_var, onvalue="on", offvalue="off" )
+        self.switch.grid(row=0, column=0, padx=10, pady=5)
+
+        self.switch_1 = customtkinter.CTkSwitch(master=self.scrollable_frame, text=self.func_name[1], command=self.auto_delete, variable=self.switch_var_1, onvalue="on", offvalue="off" )
+        self.switch_1.grid(row=1, column=0, padx=10, pady=5)
+
+        self.scrollable_frame_switches.append(self.switch)
+        self.scrollable_frame_switches.append(self.switch_1)
+
+    def delete_out_of_stock(self):
+        self.printOut(self.switch.get().upper() + " chức năng " + self.func_name[0])
+
+    def auto_delete(self):
+        self.printOut(self.switch.get().upper() + " chức năng " + self.func_name[1])
+        # Lấy danh sách sản phẩm từ API hoặc nguồn dữ liệu của bạn
+        product_list = wcapi.get(self.product_api).json()
+
+        # Lặp qua từng mục sản phẩm
+        for product in product_list:
+            stock_quantity = product.get("stock_quantity", 0)
+
+            # Kiểm tra nếu stock_quantity là 0
+            if stock_quantity == 0:
+                # Gửi yêu cầu xóa sản phẩm bằng API hoặc phương thức xóa tương ứng
+                response = wcapi.delete(f"{self.product_api}/{product['id']}")
+                if response.status_code == 200:
+                    self.printOut(f"Xóa sản phẩm {product['name']} thành công!")
+        
+        
+        
     def update_data_str(self, new_data):
         self.data_str_app = new_data
         self.printOut(self.data_str_app)  # In ra giá trị mới của data_str
@@ -126,7 +170,7 @@ class App(customtkinter.CTk):
         self.printOut("CRUD 1 "+ name_api)
 
         if self.toplevel_window is None or not self.toplevel_window.winfo_exists():
-            self.toplevel_window = CreateAProductWindow(self, name_api , self.update_data_str)  # create window if its None or destroyed
+            self.toplevel_window = CreateAProductWindow(self, name_api , self.update_data_str, self.switch.get() )  # create window if its None or destroyed
                 
         else:
             self.toplevel_window.focus()  # if window exists focus it
@@ -155,7 +199,7 @@ class App(customtkinter.CTk):
                     'stock_quantity': row['Stock'],
                     'regular_price': row['Regular price'],
                     'sale_price': row['Sale price'],
-                    'images':images_list,
+                    # 'images':images_list,
                 }
                 data.append(product_data)
 
@@ -246,7 +290,7 @@ class App(customtkinter.CTk):
 
                     # lấy tên sản phẩm đó
                     tiki.name = tiki.getProductInfo(name_xpath)
-                    print(tiki.name.lower())
+                    
                     if tiki.name == "Không tìm thấy sản phẩm":
                         continue
                     else:
@@ -261,14 +305,14 @@ class App(customtkinter.CTk):
 
                         # lấy type
                         tiki.getCate(tiki.name)
-                        print(tiki.cat_txt)
+                        
 
                         # lấy Vị
                         tiki.getFavors(favor_xpath)
-                        print(tiki.favor_txt)
+                        
 
                         tiki.getWeights(favor_xpath)
-                        print(tiki.weight_txt)
+                        
                         
                         # lấy ảnh
                         tiki.getImages()
@@ -293,13 +337,14 @@ class App(customtkinter.CTk):
 
 
 class CreateAProductWindow(customtkinter.CTkToplevel):
-    def __init__(self, parent, name_api, callback):
+    def __init__(self, parent, name_api, callback, delete_out_of_stock):
         super().__init__(parent)
         self.geometry(f"{860}x{550}")
         self.title("Product")
 
         self.name_api = name_api
         self.callback = callback 
+        self.is_out_of_stock = delete_out_of_stock
 
         self.display_images = []
         self.images = []
@@ -426,10 +471,10 @@ class CreateAProductWindow(customtkinter.CTkToplevel):
 
         my_created_data = wcapi.post(self.name_api, self.data)
         if my_created_data.status_code == 201 or my_created_data.status_code == 200:
-            self.data_str = "Đã thêm Sản phẩm thành công!"
+            self.data_str = f"Đã thêm Sản phẩm {self.name} thành công!"
             self.callback(self.data_str)
         else:
-            self.data_str = "Đã thêm Sản phẩm KHÔNG thành công!"
+            self.data_str = f"Đã thêm Sản phẩm {self.name} KHÔNG thành công!"
             self.callback(self.data_str)
 
     def changeEntry(self, entry, new_value):
@@ -447,6 +492,9 @@ class CreateAProductWindow(customtkinter.CTkToplevel):
         regular_price = data.get("regular_price")
         sale_price = data.get("sale_price")
         stock_quantity = str(data.get("stock_quantity"))
+
+        
+        self.auto_delete_id(self.id, self.stock_quantity)
         
         self.changeEntry(self.nameProductInputTxt, name)
         self.changeEntry(self.rePriceProductInputTxt, regular_price)
@@ -470,6 +518,9 @@ class CreateAProductWindow(customtkinter.CTkToplevel):
         self.short_des = self.short_des_textbox.get("0.0", "end")
         self.stock_quantity =  int(self.stocksInputTxt.get())
 
+        
+        self.auto_delete_id(self.id, self.stock_quantity)
+
         self.data = {
             "name":self.name,
             "type":self.type,
@@ -482,21 +533,43 @@ class CreateAProductWindow(customtkinter.CTkToplevel):
         }
 
         my_updated_data = wcapi.post(self.name_api+"/"+self.id, self.data)
-        print(my_updated_data.status_code)
-
         if my_updated_data.status_code == 201 or my_updated_data.status_code == 200:
-            self.data_str = "Cập nhật sản phẩm thành công! Bạn có thể View sản phẩm"
+            self.data_str = f"Cập nhật sản phẩm {self.name} thành công! Bạn có thể View_1 sản phẩm."
             self.callback(self.data_str)
         else:
             self.data_str = "Cập nhật không thành công!!"
             self.callback(self.data_str)
+
+    def clear_all(self):
+        self.id = self.idInputTxt.delete(0, tk.END)
+        self.name = self.nameProductInputTxt.delete(0, tk.END)
+        self.type = self.typeOptionmenu.get()
+        self.re_price = self.rePriceProductInputTxt.delete(0, tk.END)
+        self.sale_price =  self.salePriceProductInputTxt.delete(0, tk.END)
+
+        self.des = self.des_textbox.delete("1.0", "end")
+        self.short_des = self.short_des_textbox.delete("1.0", "end")
+
+        self.stock_quantity =  self.stocksInputTxt.delete(0, tk.END) 
+
+    def auto_delete_id(self, id, stocks):
+        if self.is_out_of_stock == "on":
+            # Kiểm tra nếu stock_quantity là 0
+            if stocks == 0 or stocks == "0":
+                # Gửi yêu cầu xóa sản phẩm bằng API hoặc phương thức xóa tương ứng
+                response = wcapi.delete(self.name_api+"/"+id, params={"force": True}).json()
+                if response.status_code == 200:
+                    name = response.get("name")
+                    self.callback(f"Xóa sản phẩm { name } thành công!")
+                    self.clear_all()
+                    
 
     def delete(self):
         self.id = self.idInputTxt.get()
         my_deleted_data = wcapi.delete(self.name_api+"/"+self.id, params={"force": True})
 
         if my_deleted_data.status_code == 201 or my_deleted_data.status_code == 200:
-            self.data_str = "Đã xóa sản phẩm thành công."
+            self.data_str = f"Đã xóa sản phẩm {self.name} thành công."
             self.callback(self.data_str)
         else:
             self.callback(self.data_str)
