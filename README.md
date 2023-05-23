@@ -10,6 +10,7 @@
 
 ## 🧐 Authors
 **Author**: Quách Bảo Ngọc - 20520655
+**Role**: Main Developer
 
 ## 👩‍💻🧑‍💻 Teams:
 Trịnh Văn Hậu
@@ -25,7 +26,7 @@ Lê Vũ Quốc Việt
 
 ## 🖼️ Giao diện
 
-### 1. ClawerProgram.exe
+### 1. Main.exe
 ![3](https://user-images.githubusercontent.com/80575560/232669725-52e87e5e-8b8a-4b56-8fe7-527d34693527.png)
 
 ### 2. Khi chạy app
@@ -44,15 +45,24 @@ Lê Vũ Quốc Việt
 
 
 <b>C2: Sử dụng exe </b>
-- Truy cập folder *dist*, chạy ClawerProgram.exe
-- Người dùng nhập cách từ khóa cần claw và số trang cần claw ( mỗi trang tương ứng 50 sản phẩm * số trang = tổng sản phẩm )
+- Truy cập folder *dist*, chạy main.exe
 
-<b>Output: Xuất hiện 2 file </b>
-  - data.txt: Lưu các thông tin thành các dictionary để dễ xem thông tin
-  - import_csv.csv: File được tạo từ data.txt để import lên Wordpress
+
+<b>HƯỚNG DẪN CHI TIẾT</b>
+PHẦN 1: TIKI CLAWER
+    1. Người dùng nhập cách từ khóa cần claw và số trang cần claw ( mỗi trang tương ứng 50 sản phẩm * số trang = tổng sản phẩm )
+    2. Xuất hiện 2 file:
+      2.1 data.txt: Lưu các thông tin thành các dictionary để dễ xem thông tin
+      2.2 import_csv.csv: File được tạo từ data.txt để import lên Wordpress
+
+
+PHẦN 2: WOOCOMMERCE DASHBOARD
+ĐỌC HƯỚNG DẪN TRÊN MÀN HÌNH APP.
   
 ## 🥲 Chức năng tương lai
-TODO: Tự động import file csv lên Wordpress
+TODO: 
+  1. Hỗ trợ tạo Coupons, Report
+  2. Upload hình ảnh lên Woo
 
 ## License
 This project is licensed under the ISC License.

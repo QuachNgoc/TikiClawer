@@ -5,3 +5,4 @@ __pycache__/
 build/
 main.spec
 ClawerProgram.spec
+SampleApp.py
