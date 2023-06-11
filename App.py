@@ -13,6 +13,11 @@ import csv
 
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("green")
+welcome = """
+
+
+
+"""
 
 url_q = "https://tiki.vn/search?q="
 # file_path = "import_data.csv"
@@ -22,9 +27,9 @@ file_path = "new_import_data.csv"
 product_txt_path = "new_data.txt"
 
 wcapi = API(
-    url="http://localhost/giadungviet",
-    consumer_key="ck_5c33f700ac22e46511e9f847a5cf71df4d26a6d8",
-    consumer_secret="cs_517ed556cf4ef56349a99d5b3318c3acd4ac7fb4",
+    url="https://ngocvietfood.azurewebsites.net/",
+    consumer_key="ck_ea705ec27025b8f8aa70e72d567551c866e0f95b",
+    consumer_secret="cs_29d6f005e529c09182b7bf87bc890e34f27026aa",
     version="wc/v3",
     wcapi=True
 )
@@ -51,7 +56,7 @@ class App(customtkinter.CTk):
         self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
 
-        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="Tiki Clawer", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="NFV", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
         
         self.searchInputTxt = customtkinter.CTkEntry(self.sidebar_frame, placeholder_text="Nhập keywords: ")
@@ -81,15 +86,19 @@ class App(customtkinter.CTk):
 
         #----------------Output Textbox -----------------#
         self.textbox = customtkinter.CTkTextbox(self)
-        self.textbox.insert("0.0", """
-        ##Chào mừng đến với ứng dụng của chúng tôi!
-
-        Vào Products để chọn:
-        1) CRUD_1: CRUD 1 sản phẩm
-        2) Create_All: Tạo sản phẩm từ file csv
-        3) List_All: Hiển thị tất cả sản phẩm
-        4) View_1: Xem thông tin của 1 sản phẩm theo ID
-
+        self.textbox.insert("0.0", f"""
+        ##Chào mừng đến với ứng dụng của chúng tôi!   
+            
+            Vào Products để chọn:
+            1) CRUD_1: CRUD 1 sản phẩm
+            2) Create_All: Import tất cả sản phẩm từ file csv
+            3) List_All: Hiển thị tất cả sản phẩm
+            4) View_1: Xem thông tin của 1 sản phẩm theo ID
+            
+        ## Chức năng tự động
+        - Tự động xóa sản phẩm hết hàng: Khi stock của sản phẩm về 0 thì 
+        hệ thống tự động xóa sản phẩm đó.
+        
         """)
 
         self.textbox.grid(row=0, column=1, rowspan=2, padx=20, pady=(20,0), sticky="nsew")  
@@ -119,7 +128,7 @@ class App(customtkinter.CTk):
 
         # create scrollable frame
         self.scrollable_frame = customtkinter.CTkScrollableFrame(self, label_text="Chức Năng")
-        self.scrollable_frame.grid(row=1, column=2, padx=10, pady=20, sticky="nsew")
+        self.scrollable_frame.grid(row=1, column=2,padx=10, pady=20, sticky="nsew")
         self.scrollable_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_frame_switches = []
         self.func_name = ["Xóa khi hết hàng dựa theo ID", "Tự động xóa sản phẩm hết hàng"]

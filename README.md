@@ -5,7 +5,7 @@
 ![GitHub open issues](https://img.shields.io/github/issues/QuachNgoc/TikiClawer?style=for-the-badge)
 
 ## Description
-> #### Trình thu thập thông tin Tiki đơn giản để xuất tệp CSV.
+> #### Trình thu thập thông tin Tiki đơn giản để xuất tệp CSV để import vào trang web: <a href='https://ngocvietfood.azurewebsites.net/'>NgocVietFood</a>
 
 
 ## 🧐 Authors
