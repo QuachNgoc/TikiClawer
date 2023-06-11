@@ -23,6 +23,8 @@ Nguyễn Thị Trà Giang
 
 Lê Vũ Quốc Việt
 
+## Video demo
+[https://clipchamp.com/watch/qPurIT9bdvP](url)
 
 ## 🖼️ Giao diện
 
