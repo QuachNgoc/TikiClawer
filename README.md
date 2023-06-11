@@ -54,9 +54,13 @@ Lê Vũ Quốc Việt
 
 <b>HƯỚNG DẪN CHI TIẾT</b>
 PHẦN 1: TIKI CLAWER
+
     1. Người dùng nhập cách từ khóa cần claw và số trang cần claw ( mỗi trang tương ứng 50 sản phẩm * số trang = tổng sản phẩm )
+    
     2. Xuất hiện 2 file:
+    
       2.1 data.txt: Lưu các thông tin thành các dictionary để dễ xem thông tin
+      
       2.2 import_csv.csv: File được tạo từ data.txt để import lên Wordpress
 
 
