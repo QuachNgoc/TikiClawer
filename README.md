@@ -5,7 +5,7 @@
 ![GitHub open issues](https://img.shields.io/github/issues/QuachNgoc/TikiClawer?style=for-the-badge)
 
 ## Description
-> #### Trình thu thập thông tin Tiki đơn giản để xuất tệp CSV.
+> #### "Creating a simple Tiki information gathering tool to export data into a CSV file that can be imported into Woocommerce.
 
 
 ## 🧐 Authors
