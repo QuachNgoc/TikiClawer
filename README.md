@@ -10,19 +10,9 @@
 
 
 ## 🧐 Authors
-**Author**: Quách Bảo Ngọc - 20520655
-**Role**: Main Developer
+**Author**: Quách Bảo Ngọc(Nicole Quach) - 20520655
 
-## 👩‍💻🧑‍💻 Teams:
-Trịnh Văn Hậu
-
-Nguyễn Thể Phong
-
-Nguyễn Thị Trà Giang
-
-Đào Võ Trường Giang 
-
-Lê Vũ Quốc Việt
+**Role**: Python Developer
 
 ## 🖼️ Giao diện
 
@@ -44,9 +34,14 @@ Lê Vũ Quốc Việt
 
 ## ⚙️ Hướng dẫn sử dụng
 <b>C1: Sử dụng Python để chạy</b>
-- Chạy file requirements.txt <code> pip install -r requirements.txt </code>
-- Chạy file main.py <code> python main.py </code>
-
+- Chạy file requirements.txt
+```python
+pip install -r requirements.txt
+```
+- Chạy file main.py
+```python
+python main.py
+```
 
 <b>C2: Sử dụng exe </b>
 - Truy cập folder *dist*, chạy main.exe
